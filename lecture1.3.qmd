@@ -147,7 +147,9 @@ ggplot(penguins,
   labs(x="Species", fill="Species", y="Count")+
   geom_bar() +
   coord_flip() +
-  theme_minimal()
+  theme(
+    axis.title =element_text(size=17, color="purple")
+  )
 ```
 
 
