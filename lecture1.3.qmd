@@ -1,0 +1,171 @@
+---
+title: "Lecture 1.3"
+date: 2024-01-08
+editor_options: 
+  chunk_output_type: console
+---
+
+## Load packages
+
+```{r}
+library(tidyr)
+library(tidyverse)
+library(palmerpenguins)
+
+```
+
+## Tidy data
+```{r}
+
+##untidy temp data
+
+# untidy data ----
+temp_data_wide <- tribble(
+  ~date, ~station1, ~station2,  ~station3,
+  "2023-10-01", 30.1, 29.8,  31.2,
+  "2023-11-01", 28.6, 29.1,  33.4,
+  "2023-12-01", 29.9, 28.5,  32.3
+)
+
+# make tidy ----
+temp_data_long <- temp_data_wide |>
+  pivot_longer(cols = starts_with("station"), 
+               names_to = "station_id", 
+               values_to = "temp_c")
+
+```
+
+
+
+# Plot 1
+
+```{r}
+
+ggplot(data = penguins,
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm,
+           color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm")+
+  scale_color_manual(values = c("darkorange", "purple", "cyan4"))+ 
+  labs(x="Bill Length (mm)", y = "Bill Length (mm)", color = "Species")+
+  theme_minimal()
+
+
+
+
+```
+
+### Plotting a continuous variable
+```{r}
+
+ggplot(penguins, 
+       aes(x=body_mass_g, 
+           y= flipper_length_mm, 
+           color=body_mass_g))+
+  geom_point() +
+  scale_color_gradient(low="#132843", high = "#F7DD4C")
+  labs(x="Body Mass (g)", 
+       y="Flipper Length (mm)",
+       color="Body Mass (g)") +
+  theme_minimal()
+
+```
+
+
+### Mapping Locally
+
+```{r}
+##mapping locally
+ggplot(data = penguins,
+       aes(x = bill_length_mm, 
+           y = bill_depth_mm)) +
+  geom_point(aes(color = species)) +
+  geom_smooth(method="lm") + ##when you set color locally (within geom_point in stead of ggplot), ggplot maps color only across species for the points. Ih this case we get a best fit line across the total dataset
+  labs(x="Bill Length (mm)", y = "Bill Length (mm)", color = "Species")+
+  theme_minimal()
+```
+
+
+# Plot 2
+
+```{r}
+ggplot(penguins, 
+       aes(x=species)) +
+  geom_bar()
+```
+
+
+## Overriding geom_bar's stat
+
+```{r}
+penguins_summary <- penguins |>
+  count(species)
+
+
+ggplot(penguins_summary, 
+       aes(x=species, 
+           y=n)) +
+  geom_bar(stat="identity") +
+  theme_minimal()
+```
+
+
+## Override default stat mapping
+
+```{r}
+##say we want to plot the proportion each species represents instead of the total count
+ggplot(penguins, 
+       aes(x=species,
+           y=after_stat(prop), group=1)) + ##says not to group by individual species but rather using the total population of penguins
+  geom_bar() +
+  theme_minimal()
+
+```
+
+
+## Position adjustments
+
+```{r}
+ggplot(penguins, aes(x = species, fill=island))+
+  geom_bar(position=position_dodge2(preserve="single"))+ ##you can set position using a position function. In this case preserves each column's length instead of the total, keeps each element of Adelie distinct and the same size
+  labs(x="Species", y="Count", fill = "Island") +
+  scale_fill_viridis_d()+
+  theme_minimal()
+
+```
+
+
+## Coordinate Systems 
+
+```{r}
+
+ggplot(penguins,
+       aes(x=species,
+           fill=species))+
+  scale_fill_viridis_d()+
+  labs(x="Species", fill="Species", y="Count")+
+  geom_bar() +
+  coord_flip() +
+  theme_minimal()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
