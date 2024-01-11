@@ -1,0 +1,38 @@
+---
+title: "SR 1"
+author: "Hannah Irish"
+format: html
+editor: visual
+---
+
+## 1. School/Life Questions
+
+-   I graduated in 2020 with a Bachelor of Science in Environment and Ecology, Evolution and Biodiversity. I worked as an optician at an eye doctor before coming to Bren, where I am a 2nd year MESM student specializing in Energy & Climate and taking as many data science questions as I can.
+
+-   I hope to stay comfortable in R, as a lot of the remaining MESM classes that I'm going to take do not focus heavily on R. I also hope to learn some skills to make great visuals for my masters group project. I also hope to learn some skills that I can add to a resume/transfer to other programs like Tableau and Power BI so I can be a more attractive job applicant.
+
+-   My ideal job would be to work at NREL or the CPUC as an analyst for a specific area of clean energy. I see that they have jobs in ZEV rollout or industrial decarbonization analysis and I would love to be a part of those teams. I think I'm very flexible to a lot of job functions but as long as I can do some data analysis relating to clean energy, I think that would be my preferred job course
+
+-   I started undergrad in the engineering college at my university where I learned C++ first which was really interesting because at this point in my career I'm really good with thinking in vectors but not as good at thinking about visual output. That's part of why I wanted to take this class -- I'm really good at the doing of programming but I need a lot more practice with producing visualized results visualizations and putting everything into context.
+
+## 2. Learning style
+
+-   I loved doing the shiny app of the MESM advanced data analysis class (244). I really enjoyed learning how to work with the new functions that come with shiny, and I appreciated having a visual output to share instead of just more palmer penguins statistical analysis (which are really helpful as a learning tool but not my career area!!). I also loved the MESM econ class (204) projects where they'd give us data sets and require analysis, like how trends in carbon dioxide were projected and practice doing more complex manipulation of multiple data sets. These have felt like exciting puzzles to me and I realized that I love figuring out how to get something from A to B when I have an idea of what B should be.
+
+-   I feel relatively confident in data visualization skills. I think I'm pretty proficient with ggplot but now how to be really creative with it above basics. It takes me a while to figure out why something is or is not an appropriate graph/chart type for a given data set when it's not explicitly obvious.
+
+-   The only class I've really struggled with at Bren was the MESM politics and policy class (241), honestly because there really wasn't anything methodological way to go about answering questions. The grading felt very arbitrary to me, but it's possible that I just didn't *get* it.
+
+-   This is the only class I'm taking this quarter (besides the one credit workshop)! Other than that, the 4 credits towards the MESM GP will be the most demanding as we have our faculty review in 4 weeks and a day.
+
+-   I am working 2 jobs this quarter, which is a bit stressful. I'm unused to having so little official class time and instead have to balance getting deliverables done for two different stakeholders in one week, so I hope to stretch and train my self motivation muscles.
+
+-   "Identify which types of visualizations are most appropriate..." and "Build effective, responsible, accessible, and aesthetically-pleasing visualizations...". As I mentioned, those are the two areas of data visualization that I think I can grow the most in, and are really cool skills to learn as a result of this class. I hope to be a big asset to my GP.
+
+-   I will really have to map out my work time, as I mentioned with the GP and job situation, and I'm looking forward to getting better at that skill. I've found that class homework has been my favorite weekly responsibilities at Bren, so I usually elect to begin on those first. Sometimes I procrastinate on paid work with my homework, which is bad, but helpful for turning things in on time. I will use homework as an opportunity to get really efficient with R so that I can be faster and not have to look up the arguments of basic functions as much. I tend to be a lone wolf (I elect to do group projects by myself because I like doing all the work) so I will really engage with the collaborative effort in discussions and lecture to break this habit.
+
+## 3. Fun Questions
+
+-   I used to live in LA so I'm a really big movie/tv person. I'm hoping to go to a movie in theaters every once in a while, usually in the evenings when I'm done with work. I also like to read but I've been doing a lot of audiobooks during school so I can squeeze it in during travel time, etc. I also have gotten really into football in the past few years and had to come to terms with the fact that it's reached hobby level. BUT my college team just won the NCAA national championships and fantasy football season is over, so it shouldn't really take up as much mental energy anymore.
+
+-   I've been watching Reacher on Amazon prime which is based on a Lee Child book series that my mom loves. It was first Tom Cruise movie but he was like super miscast so it's exciting to watch a tv show version with an awesome lead. I enjoy hanging out with my parents perhaps more than the average 25 year old, so I really enjoyed my precious time with them this past month.
