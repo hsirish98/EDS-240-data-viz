@@ -1,0 +1,39 @@
+---
+title: "Discussion Week 2"
+format: html
+editor: visual
+---
+
+Not synonymous with caption -- which would include last week's "what question does this answer and what is the answer?" Figure caption gives the answer to the question being asked. 
+
+Reason for including the chart should be very specific and detailed of an explanation. Used to describe the main takeaways of the data visualization
+
+Re: image on slide 9 of the deck for today's discussion 
+
+Alt text:
+
+A scatter plot showing climate change vulnerability from extreme to low risk versus annual change in population from a decreasing -1% to an increasing +6% from 2018-2035 for Europe, Americas, Asia, Oceania, and Africa, where color denotes region and size of dot denotes size of population. 
+
+Question: to what extent is climate change vulnerability and annual percentage change population correlated and to what extent are these countries correlated by continent? 
+
+A: climate change vulnerability is correlated with population growth. The majority of european and american countries are at less risk of climate change than most african countries
+
+
+Looking at a picture of stem cell genes in a chicken embryo.
+
+High resolution microscope image showing different gene types in different colors revealing that genes specialize in areas of the embryo. 
+
+
+In regions of the US that grow corn, which profit the most from corn? A: Iowa, Minnesota, Illinois
+
+
+Slide 10
+
+A line graph with confidence intervals showing the growth acroporid cover over a 100 year period with the historical trajctory showing faster growth and steady coverage versus the post warming trajectory which shows slower growth with more variation.  
+
+Confidence interval reminder -- in a 95% CI, 95% of the data fall within that buffer. 
+
+
+
+
+
