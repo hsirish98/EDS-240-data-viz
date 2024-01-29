@@ -1,0 +1,147 @@
+---
+title: "3.3"
+format: html
+editor: visual
+---
+
+## Setup
+
+```{r}
+
+library(tidycensus)
+library(tidyverse)
+library(janitor)
+library(gghighlight)
+
+source(here::here("week3/KEYS.R"))
+
+census_api_key(censusKEYS)
+
+lyme <- read_csv(here::here("week3/data/LD-Case-Counts-by-County-01-20.csv"))
+
+```
+
+## Wrangling
+
+```{r}
+
+lyme_clean <- lyme %>% 
+  janitor::clean_names() %>% 
+  rename(county = ctyname, state = stname, status = ststatus) %>% 
+  pivot_longer(cols = 6:ncol(lyme),
+               names_to = "city_year",
+               values_to = "reported_cases") %>% 
+  ##remove the word "cases" from the year (but it'll still be a character string)
+  mutate(year = str_remove(city_year, pattern = "cases"),
+         year = as.factor(year))
+
+## calculate the total cases per state
+lyme_by_state <- lyme_clean %>% 
+  group_by(year, state) %>% 
+  summarise(total_cases = sum(reported_cases))
+
+
+## this is what we used the API key for (It's helpful at this point to write this into a .csv file so you don't have to pull from the internet/API every time (sometimes the API is down, sometimes you don't have internet...etc))
+us_state_pop <- get_estimates(geography = "state", 
+                              product = "population",
+                              year = 2019) %>% 
+  filter(variable == "POP") %>% 
+  select(state = NAME, population = value)
+
+lyme_pop <- left_join(lyme_by_state, us_state_pop) %>% 
+  mutate(pop100k = population/100000,
+         cases_per100k = total_cases/pop100k)
+
+
+  
+```
+
+## Line plot
+
+```{r}
+
+##these are referred to as "spaghetti plots" and are very difficult to read as they are just a bunch of information on a plot
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state)) +
+  geom_line() +
+  geom_point() 
+
+##highlights just that particular state and grays out the rest of the lines behind it
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state, color=state)) +
+  geom_line() +
+  geom_point() +
+  gghighlight::gghighlight(state=="New Jersey")
+
+
+
+##highlight based on a conditional
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state, color=state)) +
+  geom_line() +
+  geom_point() +
+  ##highlight only the states that experienced a max case count of 100
+  gghighlight::gghighlight(max(cases_per100k)>100)
+
+##aspect ratio
+
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  filter(state == "Vermont") %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state)) +
+  geom_line() +
+  coord_fixed(ratio=1/50)+
+  theme_minimal()
+
+```
+
+## Area Chart
+
+```{r}
+
+##area chart 1 group
+
+lyme_pop %>%  
+  filter(year %in% c(2010:2020)) %>% 
+  filter(state=="Michigan") %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state, fill = state)) +
+  scale_fill_manual(values="blue")+
+  geom_area() +
+  scale_x_discrete(expand = c(0, 0))+
+  scale_y_continuous(expand = c(0,0))+
+  theme(legend.position="none") +
+  theme_minimal()
+
+
+
+## stacked area chart 
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  filter(state %in% c("Maine", "Rhode Island", "New Hampshire", "Vermont")) %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state, fill=state)) +
+  geom_area()
+
+##this is a bad type of graph if it's important to know the absolute values. Here the actual value corresponds to the difference between the top and the bottom for each color. Good when you want to show the evolution of a whole and the difference in contribution of each to the whole
+
+
+##instead, let's try a proportional area:
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  filter(state %in% c("Maine", "Rhode Island", "New Hampshire", "Vermont")) %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state, fill=state)) +
+  geom_area(position = position_fill(reverse=TRUE)) +
+  scale_y_continuous(labels=scales::label_percent(scale = 100))
+
+
+##line chart version
+lyme_pop %>% 
+  filter(year %in% c(2010:2020)) %>% 
+  filter(state %in% c("Maine", "Rhode Island", "New Hampshire", "Vermont")) %>% 
+  ggplot(aes(x=year, y=cases_per100k, group=state, color=state)) +
+  geom_line() +
+  facet_wrap(~state)
+
+```

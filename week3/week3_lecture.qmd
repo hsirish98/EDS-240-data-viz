@@ -1,20 +1,198 @@
 ---
-title: "SR 1"
+title: "Lecture 3 Part 2"
 author: "Hannah Irish"
 format: html
 editor: visual
 ---
 
-Install packages
+Load packages
 
 ```{r}
-install.packages("chron") # for working with dates / times
-install.packages("naniar") # tools for exploring & handing missing data
-install.packages("tidytuesdayR") # used to download TidyTuesday data
-install.packages("tidycensus") # an R package that allows users to interface with a select number of the US Census Bureau’s data APIs and return tidyverse-ready data frames
-install.packages("ggridges") # {ggplot2} extension for creating ridgeline plots
-install.packages("gghighlight") # {ggplot2} extension for highlighting geoms
-install.packages("ggbeeswarm") # {ggplot2} extension for creating categorical scatter (violin point) plots
-install.packages("see") # {ggplot2} extension for model visualization (we'll be using it for it's geom, geom_violindot())
-install.packages("scales") # provides the internal scaling infrastructure used by ggplot2, and gives you tools to override the default breaks, labels, transformations and palettes (installed automatically with {ggplot2} or {tidyverse})
+#Load packages
+
+library(tidyverse)
+library(chron)
+library(naniar)
+
+
+# import data - from the internet using the hyperlink
+mko <- read_csv("https://portal.edirepository.org/nis/dataviewer?packageid=knb-lter-sbc.2007.17&entityid=02629ecc08a536972dec021f662428aa")
+
+
+
+```
+
+Data wrangling
+
+```{r}
+
+mko_clean <- mko %>%
+  ##select columns of interest
+  select(year, month, day, decimal_time, Temp_bot) %>% 
+  ##create a new column called "date", unite the year, month, day column, and separate them by a hyphen
+  unite(date, year, month, day, sep = "-", remove = FALSE) %>% 
+  ##use chron::times() to convert decimal time to a normal HH:MM:SS 
+  mutate(time = times(decimal_time)) %>% 
+  ##create a new column called "date_time" combining "date" and "time" columns with unite() function
+  unite(date_time, date, time, sep = " ") %>% 
+  ##converting "date_time" into a date-time object, specifying the format of the character string (that it currently has) with quotes and % to separate. set timezone with "tz"
+  mutate(date_time = as.POSIXct(date_time, "%Y-%m-%d %H:%M:%S", tz = "GMT"),
+         ##coerce year column to a factor
+         year = as.factor(year), 
+         ##coerce month column to a factor
+         month = as.factor(month),
+         ##coerce day column to a numeric
+         day = as.numeric(day)) %>% 
+  ##add the name of the month written out as a new column called "month_name" by using the month.name vector built into R; set it as a factor 
+  mutate(month_name = as.factor(month.name[month])) %>% 
+  ##use function nanear::replace_with_na() function to replace everything in the list with NAs 
+  replace_with_na(replace = list(Temp_bot = 9999))
+
+## see slides for more use of nanear to look at NAs/visualize them in data
+  
+  
+
+```
+
+## Histograms
+
+```{r}
+
+# original plot ---
+mko_clean %>% 
+  ##set the factor order of "month_name" to the same as in the month.name column (chronologically)
+  mutate(month_name = factor(month_name, levels = month.name)) %>% 
+  ggplot(aes(x=Temp_bot, fill=month_name)) +
+  ##force each bar to sit on the x axis
+  geom_histogram(position = "identity", alpha=0.5)
+
+
+# small multiples ---
+mko_clean %>% 
+  mutate(month_name = factor(month_name, levels = month.name)) %>% 
+  ##removed color fill here
+  ggplot(aes(x = Temp_bot)) +
+  geom_histogram() +
+  facet_wrap(~month_name)
+
+# fewer groups
+
+mko_clean %>% 
+  mutate(month_name = factor(month_name, levels = month.name)) %>% 
+  filter(month_name %in% c("April", "June", "October")) %>% 
+  ggplot(aes(x=Temp_bot, fill=month_name)) +
+  geom_histogram(position = "identity", alpha = 0.5) +
+  scale_fill_manual(values = c("#2C5374", "#ADD8E6", "#8B3A3A"))
+
+```
+
+## Density Plots
+
+Density plots are a smoothed version of a histogram but the area under the curve is not the same as just laying a line over the histogram -- the total area under the curves is equal to 1. Shows the true shape of the data
+
+-   Histograms show us the counts/frequencies of values whereas densities show the proportion of values within each range
+
+```{r}
+
+##original plot as density plot
+mko_clean %>% 
+  ##set the factor order of "month_name" to the same as in the month.name column (chronologically)
+  mutate(month_name = factor(month_name, levels = month.name)) %>% 
+  ggplot(aes(x=Temp_bot, fill=month_name)) +
+  ##force each bar to sit on the x axis
+  geom_density(alpha=0.5)
+
+## fewer groups but density
+mko_clean %>% 
+  mutate(month_name = factor(month_name, levels = month.name)) %>% 
+  filter(month_name %in% c("April", "June", "October")) %>% 
+  ggplot(aes(x=Temp_bot, fill=month_name)) +
+  ##adjust sets how smooth the line is to following the shape (>1 is very smooth, <1 is choppier)
+  geom_density(alpha = 0.5, adjust = 0.5) +
+  scale_fill_manual(values = c("#2C5374", "#ADD8E6", "#8B3A3A"))
+
+
+
+```
+
+```{r}
+
+##two groups -- both normally distributed but different means and n of observations
+dummy_data <- data.frame(value = c(rnorm(n = 100, mean = 5),
+                                   rnorm(n = 200, mean = 10)),
+                         group = rep(c("A", "B"),
+                                     times = c(100, 200)))
+
+##make histogram
+
+ggplot(dummy_data, aes(x=value, fill = group)) +
+  geom_histogram(position = "identity", alpha = 0.7) + 
+  ##rug plot shows the single observations under the histogram
+  geom_rug(aes(color= group), alpha = 0.7)
+
+## as a density plot
+ggplot(dummy_data, aes(x=value, fill = group)) +
+  geom_density(alpha = 0.7) + 
+  ##rug plot shows the single observations under the histogram
+  geom_rug(aes(color= group), alpha = 0.7)
+
+##without the rug plot, it makes it much less obvious that group B has more observations
+
+
+##if you want to show distribution AND say something about sample size, you'd pick a histogram over the density plot, but be mindful of the fact that the number of bins affects how you visualize the data.
+```
+
+## Ridgeline Plot
+
+```{r}
+
+ggplot(mko_clean, aes(x = Temp_bot, y = month_name, fill = after_stat(x))) +
+  ggridges::geom_density_ridges_gradient(rel_min_height = 0.01, scale=3) +
+  scale_y_discrete(limits = rev(month.name)) +
+  scale_fill_gradientn(colors = c("#2C5374","#849BB4", "#D9E7EC", "#EF8080", "#8B3A3A"))
+
+```
+
+## Boxplots
+
+```{r}
+
+ggplot(mko_clean, aes(x=month_name, y=Temp_bot, fill=month_name)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = rev(month.name)) +
+  coord_flip() + 
+  gghighlight::gghighlight(month_name == "October") +
+  theme(
+    ##remove legend
+    legend.position = "none"
+  )
+
+# jitter and dodge
+library(palmerpenguins)
+
+penguins %>%
+  ##coerce year to be a factor rather than an integer
+  mutate(year = as.factor(year)) %>% 
+  ggplot(aes(x=species, y= body_mass_g, color = year)) +
+  geom_boxplot() +
+  geom_point(alpha = 0.5, position = position_jitterdodge(jitter.width = 0.2)) +
+  coord_flip()
+
+```
+
+## Violin plot
+
+```{r}
+
+ggplot(mko_clean, aes(x=month_name, y=Temp_bot)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "gray", alpha = 0.5, 
+               outlier.color = "black")+
+  scale_x_discrete(limits = rev(month.name)) +
+  coord_flip()
+
+# half n half
+
+ggplot(penguins, aes(x=species, y=bill_length_mm, fill = species))+
+  see::geom_violindot(size=5, alpha = 0.5)
 ```
