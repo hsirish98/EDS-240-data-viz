@@ -1,0 +1,15 @@
+---
+title: "Discussion Week"
+format: html
+editor: visual
+---
+
+## Picking ggplot() themes
+
+If you are emphasizing/investigating ONLY trends and not the absolute values of the underlying data, then going as minimalist as possible is a good move.
+
+When you have crowded data on a scatter plot, for example, it's good to mess with the transparency of the dots. You can also change the shapes to differentiate the "dots" a little bit. Also good for colorblindness, etc.
+
+In general, you'll want to avoid using a gray/darker background unless it's helpful for the eye to discern between colors of the data.
+
+Try to avoid 3D graphics as much as possible. It rarely works except for something that is naturally intuitive re: 3D such as elevation
